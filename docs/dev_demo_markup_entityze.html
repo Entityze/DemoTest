@@ -96,7 +96,7 @@
             };
 
             async function update_filelist() {
-                const response = await fetch(entityze_host + '/json/_markup_entityze.json');
+                const response = await fetch(entityze_host + '/json/markup_entityze.json');
                 const list = await response.json()
                 return list;
             }
