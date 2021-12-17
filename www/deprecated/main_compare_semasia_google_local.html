@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta http-equiv='cache-control' content='no-cache'>
+  <meta http-equiv='expires' content='0'>
+  <meta http-equiv='pragma' content='no-cache'>
+
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap">
+  <!-- link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css"-->
+  <!--link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css"-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<script>
+var donut_data ;
+console.log("We defined donut_data outside of a function");
+console.log(donut_data);
+
+$(document).ready(function(){
+
+var prefixArray = ['afg', 'meteor_strikes', 'oceans_speeding_up', 'mideast_peace', 'iran_nuclear_bomb', 'iraq3', 'bernie_sanders_and_religion', 'china_pop_up_hospitals', 'job_growth_january_2020', 'spotify_buys_ringer', 'gaza_farmers', 'doj_intervenes_russia_probe', 'mobile_world_congress_canceled', 'sudan_war_criminals', 'disney_plus', 'china_who', 'russia_belarus', 'renault_south_korea', 'rna_editing', 'paleontology_giant_turtle', 'russia_missiles', 'northern_ireland_same_sex_marriage', 'drone_turkey', 'sustainable_plastic', 'trump_sotu_black_voters', 'thailand', 'how_bloomberg_could_win', 'brexit_to_do_list', 'lion_movies', 'peru_peatlands', 'us_warns_venezuela', 'ai_finding_new_drugs', 'us_senators_visit_ukraine', 'bostwana_elephant_hunting', 'robot_surgery', 'epigenetics', 'saic_acquires_unisys', 'robot_radiologists', 'hamas', 'companies_doing_biz_with_israeli_settlements', 'french_writer_pedophilia', 'rio_carnival_coronavirus_risk', 'uk_pm_reshapes_government', 'co2_emissions_2019', 'johnson_johnson_coronavirus_vaccine', 'military_latin_america', 'bumblebees_and_climate_change', 'india_kashmir', 'nasa_wildfires', 'pterosaur_footprint', 'angola', 'pope_francis_and_celibacy', 'iraq', 'burkina', 'lidar_industry', 'recap_peace_plan', 'slovenia_coaliation_talks', 'holocaust', 'iraq2', 'genome_and_new_cures', 'italy_birthrate'];
+var prefixArrayLength = prefixArray.length
+
+var filePrefix = prefixArray[Math.floor(Math.random() * prefixArray.length)];
+var filename_html = "http://demo.entityze.com/www/".concat(filePrefix)
+var filename_meta = "http://demo.entityze.com/meta/".concat(filePrefix)
+
+$('#comparison').load(filename_html.concat("_compare_sem_google.html"));
+$('#source0').load(filename_html.concat("_semasia.html"));
+$('#source1').load(filename_html.concat("_google.html"));
+
+$.getJSON(filename_meta.concat("_meta.json"), manage_donut);
+console.log("We called the function that sets the value for donut_data");
+console.log(donut_data);
+});
+
+function manage_donut(json_content)
+{
+ donut_data = json_content.stats.current_score_percentage;
+ donut_value = json_content.stats.current_score_plus_percentage;
+ display_donut();
+};
+
+function display_donut(){
+    // Data
+    var value = donut_value
+    var text = Math.round(value * 100) + '%'
+
+    //var data = [0.0, 0.12142857142857143, 0.05, 0.0, 0.24285714285714285, 0.19285714285714287, 0.08571428571428572, 0.2642857142857143, 0]
+    var data = donut_data
+
+    // Settings
+	var width = 360
+    var height = 80
+    var anglesRange = 0.5 * Math.PI
+    var radis = Math.min(width, 2 * height) / 2
+    var thickness = 32
+    // Colors
+
+    // stat_aggregation_values = ("-","--","---","=","==","===","+","++","+++")
+
+    var colors = ["#DD8B66", "#DD8B66", "#C73F00", "#949494", "#949494", "#545454", "#66C094", "#00964D", "#00964D" ]
+
+    var pies = d3.layout.pie()
+    	.value( d => d)
+    	.sort(null)
+    	.startAngle( anglesRange * -1)
+    	.endAngle( anglesRange)
+
+		var arc = d3.svg.arc()
+    	.outerRadius(radis)
+    	.innerRadius(radis - thickness)
+
+    var translation = (x, y) => `translate(${x}, ${y})`
+
+    // Feel free to change or delete any of the code you see in this editor!
+    var svg = d3.select("#comparison_donut").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+    	.attr("class", "half-donut")
+			.append("g")
+    	.attr("transform", translation(width / 2, height))
+
+    svg.selectAll("path")
+    	.data(pies(data))
+    	.enter()
+    	.append("path")
+    	.attr("fill", (d, i) => colors[i])
+    	.attr("d", arc)
+
+		svg.append("text")
+    	.text( d => text)
+    	.attr("dy", "-0.5rem")
+    	.attr("class", "label")
+    	.attr("fill", "#00964D")
+    	.attr("text-anchor", "middle")
+}
+
+function input_filename(){
+var filePrefix = prompt("Choose a filename prefix");
+
+var filename = "http://demo.entityze.com/www/".concat(filePrefix)
+
+$('#comparison').load(filename.concat("_compare_sem_google.html"));
+$('#source0').load(filename.concat("_semasia.html"));
+$('#source1').load(filename.concat("_google.html"));
+
+};
+
+
+</script>
+
+  <style>
+
+.half-donut .label {
+      font-size: 2rem;
+    }
+
+  .site-header {
+    background-color: rgba(255, 255, 255, .85);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+  }
+
+  .regular {
+  display: flex;
+  line-height:175%;
+  word-spacing: 3px;
+  font-family: "Roboto Condensed";
+}
+
+  .column {
+  flex: 50%;
+  padding: 16px;
+}
+
+mark {
+  background:whitesmoke;
+}
+
+mark.text {
+  word-spacing: 0.2em
+  background:whitesmoke;
+}
+
+mark.text.middle {
+  word-spacing: 0.2em
+  background:whitesmoke;
+}
+
+mark.text.left {
+  word-spacing: 0.2em
+  background:whitesmnoke;
+}
+
+mark.text.right {
+  word-spacing: 0.2em
+  background:whitesmoke;
+}
+
+mark.entity {
+background:lightyellow;
+overflow-wrap: break-word;
+word-wrap: break-word;
+padding: 0px 3px 0px 3px;
+border-radius: 4px;
+text-decoration-thickness: 0.1em;
+}
+
+
+mark.entity.B {
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+color:#000000;
+}
+
+mark.entity.C {
+border-style: dotted;
+border-width: 2px;
+border-color: #949494;
+color:#000000;
+}
+
+mark.entity.D {
+background:white;
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+color:#000000;
+}
+
+mark.entity.E {
+background:yellow;
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+color:#000000;
+}
+
+mark.entity.E1 {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+color:#000000;
+}
+
+mark.entity.E2 {
+background:yellow;
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+color:#000000;
+}
+
+
+mark.entity.AB {
+border-style: solid;
+border-width: 2px;
+border-color: #CCEADB;
+background:#CCEADB;
+color:#000000;
+}
+
+mark.entity.AC {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.AD {
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+background:#C73F00;
+color:#ffffff;
+}
+
+mark.entity.AE {
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+background:#C73F00;
+color:#ffffff;
+}
+
+mark.entity.BA {
+border-style: solid;
+border-width: 2px;
+border-color: #F3D8CC;
+background:#F3D8CC;
+color:#000000;
+}
+
+mark.entity.BB {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+}
+
+mark.entity.BC {
+background:blue;
+color:white;
+}
+
+mark.entity.BD {
+background:blue;
+color:white;
+}
+
+mark.entity.BE {
+background:blue;
+color:white;
+}
+
+mark.entity.CA {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration-style: underline dotted #ffffff;
+
+}
+
+mark.entity.CB {
+background:purple;
+color:yellow;
+}
+
+
+mark.entity.CC {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+text-decoration-style: underline dotted #ffffff;}
+
+mark.entity.CD {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+text-decoration-style: underline dotted #ffffff;}
+
+mark.entity.CE {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+text-decoration-style: underline dotted #ffffff;}
+
+mark.entity.DA {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+background:#00964D;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.DB {
+background:purple;
+color:yellow;
+}
+
+mark.entity.DC {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.DD {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.DE {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.EA {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+background:#00964D;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.E1A {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+background:#00964D;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.E2A {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+background:#00964D;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.EB {
+background:purple;
+color:yellow;
+}
+
+mark.entity.EC {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.E1C {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.E2C {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.ED {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.E1D {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.E2D {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.EE {
+border-style: solid;
+border-width: 2px;
+border-color: #545454;
+background:#545454;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.E1E {
+border-style: solid;
+border-width: 2px;
+border-color: #545454;
+background:#545454;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+mark.entity.E2E {
+border-style: solid;
+border-width: 2px;
+border-color: #545454;
+background:#545454;
+color:#ffffff;
+text-decoration-style: underline solid #ffffff;}
+
+  .tooltip, .arrow:after {
+    background: #00964D;
+    border: 2px solid white;
+  }
+  .tooltip {
+    padding: 10px 20px;
+    color: white;
+    border-radius: 10px;
+    font: 12px "Roboto Condensed", Sans-Serif;
+    #text-transform: uppercase;
+    box-shadow: 0 0 7px black;
+  }
+  .arrow {
+    width: 70px;
+    height: 16px;
+    overflow: hidden;
+    position: absolute;
+    left: 50%;
+    margin-left: -35px;
+    bottom: -16px;
+  }
+  .arrow.top {
+    top: -16px;
+    bottom: auto;
+  }
+  .arrow.left {
+    left: 20%;
+  }
+  .arrow:after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: -20px;
+    width: 25px;
+    height: 25px;
+    box-shadow: 6px 5px 9px -9px black;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+  .arrow.top:after {
+    bottom: -20px;
+    top: auto;}
+
+</style>
+
+</head>
+<body>
+
+   <nav class="site-header sticky-top py-1">
+
+    <div class="container d-flex flex-column flex-md-row justify-content-between">
+    <div class="col-4 mh-100 py-2 d-none d-md-inline-block align-self-center">
+    <a href="#home"><img src= "Semasia_Logo_320X96.png" class="img-fluid" style="background: transparent;"></a>
+  </div>
+
+  <div class="col-2 mh-100 my-2 py-2 align-self-stretch regular">
+  </div>
+
+  <div class="col-4 mh-100 my-2 py-2 align-self-stretch regular" style="background:whitesmoke;">
+    <div id = "comparison_donut"></div>
+  </div>
+
+  <div class="col-2 mh-100 py-2 d-none d-md-inline-block align-self-center regular">
+    <P></P>
+   <button type="button" class="btn btn-primary btn-sm btn-block" onclick="location.reload()" style="font-size:25%;">Compare another random document</button>
+    <button type="button" class="btn-sm btn-secondary-outline btn-block" onclick="input_filename()" style="font-size:25%;">Current document information</button>
+   <button type="button" class="btn-sm btn-secondary-outline btn-block" data-toggle="collapse" href="#legend" aria-expanded="false" aria-controls="legend" style="font-size:25%;">Legend & Methodology</button>
+  </div>
+
+  </div>
+
+  </nav>
+
+  <p></p>
+
+   <div class ="svg"></div>
+
+  <div class="container collapse regular" id="legend">
+  <div class="card card-body">
+    The legend and methodology will be displayed here. Line 1.<br>
+    The legend and methodology will be displayed here. Line 2.<br>
+    The legend and methodology will be displayed here. Line 3.<br>
+    The legend and methodology will be displayed here. Line 4.<br>
+    The legend and methodology will be displayed here. Line 5.<br>
+    The legend and methodology will be displayed here. Line 6.<br>
+  </div>
+</div>
+
+    <div class="container collapse regular" id="document_info">
+  <div class="card card-body">
+    The document information will be displayed here. Line 1.<br>
+    The document information will be displayed here. Line 2.<br>
+  </div>
+</div>
+
+
+  <p></p>
+
+<div class="container flex-md-row justify-content-between regular">
+
+  <div class="col-sm-4 py-2 d-none d-md-inline-block">
+      <a href="#" class="btn btn-secondary btn active" role="button" aria-pressed="true">COMPARISON</b></a><p>
+      <div class = "p-2" id="comparison"></div>
+  </div>
+
+  <div class="col-sm-4 py-2 d-none d-md-inline-block">
+    <a href="#" class="btn btn-secondary btn active" role="button" aria-pressed="true">GOOGLE RESULTS</b></a><p>
+      <div class = "p-2" id="source1"></div>
+  </div>
+
+  <div class="col-sm-4 py-2 d-none d-md-inline-block">
+    <a href="#" class="btn btn-secondary btn active " role="button" aria-pressed="true">SEMASIA RESULTS</b></a><p>
+      <div class = "p-2" id="source0"></div>
+  </div>
+
+</div>
+
+</body>
+
+
+</html>

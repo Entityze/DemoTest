@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bebas+Neue&display=swap">
+    <style>
+        .ui-autocomplete {
+            width: 490px;
+            z-index: 10000000;
+            display: block;
+            list-style-type: none;
+            background: #ffa162;
+            box-shadow: 0 2px 16px #4b4b4b;
+            border-radius: 12px;
+            margin-top: 15px !important;
+            max-height: 300px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+
+        .ui-menu-item-wrapper {
+            /* display: none; */
+            z-index: 100000000;
+            background: #fff1e8;
+            width: 490px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer !important;
+            padding: 7px;
+            padding-right: 50px;
+
+        }
+
+        .ui-menu-item-wrapper:hover {
+            background: #ffa162;
+        }
+
+        .ui-menu-item {
+            width: 490px;
+        }
+
+
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v6.min.js" charset="utf-8"></script>
+    <!script src="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/2.5.4/tippy.js" charset="utf-8"><!/script>
+
+    <link rel="stylesheet" href="demo_entityze.css">
+
+    <script>
+        // display comparison details
+        var donut_data;
+        var donut_value;
+        var doc_info_url;
+        var doc_info_source;
+        var doc_info_date;
+        var document;
+        var prefixArray;
+
+        var entityze_host = "http://demo.entityze.com"
+        // var entityze_host = "http://127.0.0.1:5000/data"
+
+        var entityze_markup_url = entityze_host + "/www/markup/"
+        var entityze_comp_url = entityze_host + "/comp/"
+        var entityze_meta_url = entityze_host + "/meta/"
+
+        $(document).ready(async function () {
+            function getParameterByName(name, url = window.location.href) {
+                name = name.replace(/[\[\]]/g, '\\$&');
+                var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+            const fileprefix_qp = getParameterByName("fileprefix");
+            const collection = getParameterByName("collection");
+            if(collection){
+                entityze_markup_url = entityze_host + "/www/markup/" + collection + "/"
+            }
+            const checkElement = async selector => {
+                while (document.querySelector(selector) === null) {
+                    await new Promise(resolve => requestAnimationFrame(resolve))
+                }
+                return document.querySelector(selector);
+            };
+
+            async function update_filelist() {
+                const response = await fetch('_markup_entityze.json');
+                const list = await response.json()
+                return list;
+            }
+
+            prefixArray = await update_filelist();
+            $("#search-doc-tb").autocomplete({
+                source: prefixArray,
+                select: search_doc_bt_item_change
+            })
+
+            function search_doc_bt_item_change(event, ui) {
+                render_doc_by_prefix(ui.item.label);
+            }
+
+            var prefixArrayLength = prefixArray.length;
+
+            var filePrefix = prefixArray[Math.floor(Math.random() * prefixArray.length)];
+            if(fileprefix_qp){
+                filePrefix = fileprefix_qp
+            }
+            render_doc_by_prefix(filePrefix)
+            // Initialize Bootstrap & Popper tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            console.log(tooltipTriggerList)
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+
+            console.log('initialized tooltips via JS')
+
+        });
+
+        function display_metadata(json_content) {
+            //donut_data = json_content.stats_entityze.current_score_percentage;
+            //donut_value = json_content.stats_entityze.current_score_plus_percentage;
+            //display_donut();
+            doc_info_url = json_content.info.url;
+            doc_info_source = json_content.info.source;
+            doc_info_date = json_content.info.creation_date;
+        };
+
+        function display_donut() {
+            // Data
+            var value = donut_value
+            var text = Math.round(value * 100) + '%'
+
+            //var data = [0.0, 0.12142857142857143, 0.05, 0.0, 0.24285714285714285, 0.19285714285714287, 0.08571428571428572, 0.2642857142857143, 0]
+            var data = donut_data
+
+            // Settings
+            var width = 360
+            var height = 80
+            var anglesRange = 0.5 * Math.PI
+            var radis = Math.min(width, 2 * height) / 2
+            var thickness = 32
+            // Colors
+
+            // stat_aggregation_values = ("-","--","---","=","==","===","+","++","+++", "?")
+
+            // old var colors = ["#DD8B66", "#DD8B66", "#C73F00", "#949494", "#949494", "#545454", "#66C094", "#00964D", "#00964D" ]
+
+            var colors = ["#DD8B66", "#DD8B66", "#C73F00", "#949494", "#949494", "#949494", "#66C094", "#66C094", "#00964D"]
+
+            var pies = d3.layout.pie()
+                .value(d => d)
+                .sort(null)
+                .startAngle(anglesRange * -1)
+                .endAngle(anglesRange)
+
+            var arc = d3.svg.arc()
+                .outerRadius(radis)
+                .innerRadius(radis - thickness)
+
+            var translation = (x, y) => `translate(${x}, ${y})`
+
+            // Feel free to change or delete any of the code you see in this editor!
+            var svg = d3.select("#comparison_donut").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("class", "half-donut")
+                .append("g")
+                .attr("transform", translation(width / 2, height))
+
+            svg.selectAll("path")
+                .data(pies(data))
+                .enter()
+                .append("path")
+                .attr("fill", (d, i) => colors[i])
+                .attr("d", arc)
+
+            svg.append("text")
+                .text(d => text)
+                .attr("dy", "-0.5rem")
+                .attr("class", "label")
+                .attr("fill", "#00964D")
+                .attr("text-anchor", "middle")
+
+            score_summary.append('Entityze delivers a ' + (100 * donut_value).toFixed(0).toString() + '% improvement over Microsoft for this document.')
+            //doc_information.append('Source: ' + doc_info_source +' ('+doc_info_date.toString() + ')')
+
+        };
+
+        function input_filename() {
+            var filePrefix = prompt("Choose a filename prefix");
+
+            var filename_html = entityze_markup_url.concat(filePrefix)
+            var filename_comp = entityze_comp_url.concat(filePrefix)
+            var filename_meta = entityze_meta_url.concat(filePrefix)
+
+        };
+
+        async function render_doc_by_prefix(prefix) {
+
+            records = prefixArray.filter(element => element === prefix);
+            if (records.length === 0) {
+                alert("Document not found")
+            } else {
+                // console.log(records[0])
+
+                var filename_html = entityze_markup_url.concat(prefix);
+                var filename_meta = entityze_meta_url.concat(prefix)
+
+                async function load_file(name) {
+                    const response = await fetch(name);
+                    const txt = await response.text();
+                    return txt;
+                }
+
+                async function load_json_file(name) {
+                    const response = await fetch(name);
+                    const js = await response.json();
+                    return js;
+                }
+
+                var source = await load_file(filename_html.concat("_entityze.html"));
+                document.getElementById('source').innerHTML = source
+
+                const json_content = await load_json_file(filename_meta.concat("_meta.json"));
+                display_metadata(json_content);
+                document.getElementById('doc_information').innerHTML = '<br>' + 'Title: ' + prefix
+                    + '<br>' + 'Source: ' + doc_info_source
+                    + '<br>' + 'Date: ' + doc_info_date + '<br>';
+
+
+                 $('span.entity').click(function(event) {
+                   $(this).tooltip('show');
+                });
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+
+<nav class="site-header sticky-top py-1">
+
+    <div class="container d-flex flex-column px-0 flex-md-row justify-content-between">
+        <div class="col-4 mh-100 py-2 d-none d-md-inline-block align-self-center" style="    margin-top: 18px;">
+            <a href="#home"><img src="images/entityze_logo_new.png" style="width: 300px; background: transparent;"></a>
+        </div>
+
+        <div class="col-1 mh-100 my-2 py-2 align-self-stretch regular">
+        </div>
+
+        <div class="col-2 mh-100 my-2 py-2 align-self-stretch regular" style="background:transparent;">
+            <div id="comparison_donut"></div>
+        </div>
+
+        <div class="col-5 mh-100 py-2 d-none d-md-inline-block align-self-center regular">
+
+
+            <P></P>
+
+            <div class="input-group mb-3" style="    width: 500px;    float: right;">
+                <input id="search-doc-tb" type="text" class="form-control" placeholder="SEARCH DOCUMENT BY PREFIX"
+                       aria-label="SEARCH BY PREFIX" aria-describedby="basic-addon2"
+                       style="border-top-left-radius: 8px;border-bottom-left-radius: 8px;border-color: #FF6600 ; font-size: 14px; margin-right: -1px;  box-shadow: 0 0 2px #ff6600;">
+                <div class="input-group-append">
+                    <button onMouseOver="this.style.background='#f9af19'"
+                            onMouseOut="this.style.background='#FF6600'" id="search-doc-bt"
+                            class="btn btn-outline-secondary" type="button"
+                            style="font-family: Bebas Neue;     border-radius: 8px;    border-top-left-radius: 0;    border-bottom-left-radius: 0;margin-right: 8px;background:#FF6600 !important; color:white;border-color: #e45b00 ;    box-shadow: 0 0 2px #ff6600;">
+                        SEARCH
+                    </button>
+                </div>
+            </div>
+
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
+
+                <div class="btn-group mr-2" role="group">
+
+                    <button type="button" class="btn-sm btn-light" onclick="location.reload()">SHOW ANOTHER DOCUMENT
+                    </button>
+
+                </div>
+                <div class="btn-group mr-2" role="group">
+                    <button type="button" class="btn-sm btn-light" data-bs-toggle="collapse" href="#legend"
+                            aria-expanded="false" aria-controls="legend">LEGEND
+                    </button>
+                </div>
+                <div class="btn-group mr-2" role="group">
+                    <button type="button" class="btn-sm btn-light" data-bs-toggle="collapse" href="#info">DOC INFO
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="btn-sm btn-light mr-2" data-bs-toggle="collapse" href="#methodology"
+                            aria-expanded="false" aria-controls="methodology">METHODOLOGY
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="btn-sm btn-light mr-2" data-bs-toggle="collapse" href="#doc2graph"
+                            aria-expanded="false" aria-controls="legend">DOC2GRAPH
+                    </button>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+</nav>
+
+
+<div class="svg"></div>
+
+<!--   <div class="container flex-md-row justify-content-between regular">-->
+<!--        <div class="col-sm-12 py-2 d-none d-md-inline-block">-->
+<!--            <div style = "font-size:200%;font-weight:bold" id="score_summary"></div><br>-->
+<!--        </div>-->
+<!--   </div>-->
+
+<div class="container collapse regular" id="legend">
+    <div class="container w-100 px-0 regular">
+        <div class="col-sm-12">
+
+            <div class="backgroundwork" style="margin-bottom:16px;">LEGEND</div>
+
+            <div class="container w-100 p-0 regular">
+
+                <div class="col-sm-4 px-1 py-2 d-none d-md-inline-block">
+                    <mark class="entity E3A small" title="Entityze">Entityze handles these named entities</mark>
+                    <mark class="text-right small"> much better than MicrosoftMicrosoftMicrosoft.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="entity E3E4 small" title="Entityze">Entityze handles these named entities</mark>
+                    <mark class="text-right small"> better than Microsoft.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="entity E3E3 small" title="Ex-aequo">Entityze and MicrosoftMicrosoftMicrosoft handle
+                        these named entities
+                    </mark>
+                    <mark class="text-right small"> similarly.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="entity E4E3 small" title="Microsoft">Microsoft handles these named entities</mark>
+                    <mark class="text-right small"> better than Entityze.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="entity AE3 small" title="Microsoft">Microsoft handles these named entities</mark>
+                    <mark class="text-right small"> much better than Entityze.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <br>
+                    <mark class="entity E2A small" title="Entityze">Entityze handles these words</mark>
+                    <mark class="text-right small"> much better than Microsoft.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="entity E1C small" title="Entityze">Entityze handles these words</mark>
+                    <mark class="text-right small"> better than Microsoft.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="entity DD small title=" Ex-aequo
+                    "">Entityze and Microsoft handle these words</mark>
+                    <mark class="text-right small"> similarly.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="entity AC small" title="Microsoft">Microsoft handles these words</mark>
+                    <mark class="text-right small"> better than Entityze.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="entity AD small" title="Microsoft">Microsoft handles these words</mark>
+                    <mark class="text-right small"> much better than Entityze.</mark>
+                    <div style="margin-top:-8px;"></div>
+                </div>
+                <div class="col-sm-4 px-1 py-2 d-none d-md-inline-block">
+                    <mark class="text-right small">Microsoft correctly defines</mark>
+                    <mark class="entity E3 small">these named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-right small">Microsoft detects</mark>
+                    <mark class="entity E4 small">these named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Microsoft incorrectly defines</mark>
+                    <mark class="entity B4 small">these named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <br>
+                    <mark class="text-right text-muted small">N/A: Microsoft only defines named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-right text-muted small">N/A: Microsoft only defines named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-right text-muted small">N/A: Microsoft only defines named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-right text-muted small">N/A: Microsoft only defines named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-right small">Microsoft detects</mark>
+                    <mark class="entity C small">these words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-right text-muted small">N/A: Microsoft only defines named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-right text-muted small">N/A: Microsoft only defines named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-right small">Microsoft incorrectly detects</mark>
+                    <mark class="entity B3 small">these words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-right small">Microsoft incorrectly detects</mark>
+                    <mark class="entity B3 small">these words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <br>
+                    <mark class="text-right small">Microsoft detects</mark>
+                    <mark class="entity D small">these dates and numbers.</mark>
+                    <div style="margin-top:-8px;"></div>
+                </div>
+                <div class="col-sm-4 px-1 py-2 d-none d-md-inline-block">
+                    <mark class="text-left small">Entityze correctly defines</mark>
+                    <mark class="entity E3 small">these named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze detects</mark>
+                    <mark class="entity E4 small">these named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze incorrectly defines</mark>
+                    <mark class="entity B4 small">these named entities.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <br>
+                    <mark class="text-left small">Entityze correctly defines</mark>
+                    <mark class="entity E2 small">these primary words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze correctly defines</mark>
+                    <mark class="entity E1 small">these secondary words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze loosely defines</mark>
+                    <mark class="entity B2 small">these primary words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze loosely defines</mark>
+                    <mark class="entity B22 small">these secondary words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze detects</mark>
+                    <mark class="entity C small">these words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze incorrectly defines</mark>
+                    <mark class="entity B1 small">these primary words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze incorrectly defines</mark>
+                    <mark class="entity B11 small">these secondary words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze incorrectly detects</mark>
+                    <mark class="entity B3 small">these primary words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <mark class="text-left small">Entityze incorrectly detects</mark>
+                    <mark class="entity B33 small">these secondary words.</mark>
+                    <div style="margin-top:-8px;"></div>
+                    <br>
+                    <mark class="text-left small">Entityze detects</mark>
+                    <mark class="entity D small">these dates and numbers.</mark>
+                    <div style="margin-top:-8px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br></br>
+</div>
+
+
+<div class="container collapse regular" id="methodology" style="margin-top:16px;">
+    <div class="container w-100 px-0 regular">
+        <div class="col-sm-12 py-2 px-0 d-none d-md-inline-block">
+            <div class="backgroundwork" style="margin-bottom:16px;">METHODOLOGY</div>
+            Random news articles are downloaded on a regular basis and submitted "as is" to Microsoft's Azure Cognitive
+            Services for entity detection and to Entityze's LINKER (Language INterpretation & Knowledge Extraction
+            Repository). Independent human reviewers then rate the validity of output without knowing which system
+            generated it.
+            <br></br>
+        </div>
+        <div class="col-sm-4 py-2 px-0 d-none d-md-inline-block">
+        </div>
+    </div>
+</div>
+
+<div class="container collapse regular" id="info">
+    <div class="container w-100 px-0 regular">
+        <div class="col-sm-12 py-2 px-0 d-none d-md-inline-block">
+            <div class="backgroundwork" style="margin-bottom:16px;">DOCUMENT INFORMATION</div>
+            <div id="doc_information" style="margin-top:16px;"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container flex-md-row justify-content-between backgroundwork"
+     style="margin-top:16px;margin-bottom:16px;padding-top:0px;padding-bottom:0px;    background-color: #d4d4d4;"
+     id="comparison_header">
+    <div class="container w-100 px-0">
+        <div class="row" style="font-family: 'Bebas Neue'">
+            <div class="col-sm-12 py-2 " style="color: #606060;">ENTITYZE RESULTS</div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="container flex-md-row justify-content-between regular">
+    <div class="col-sm-2 py-2 d-none d-md-inline-block"></div>
+    <div class="col-sm-8 py-2 d-none d-md-inline-block">
+        <div class="p-2" id="source"></div>
+    </div>
+    <div class="col-sm-2 py-2 d-none d-md-inline-block"></div>
+</div>
+
+</body>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+        crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(async function () {
+
+        $("#search-doc-bt").click(async function () {
+            prefix = $("#search-doc-tb").val();
+            render_doc_by_prefix(prefix);
+        });
+
+
+    })
+
+</script>
+<script>
+
+</script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</html>

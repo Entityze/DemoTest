@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta http-equiv='cache-control' content='no-cache'>
+  <meta http-equiv='expires' content='0'>
+  <meta http-equiv='pragma' content='no-cache'>
+
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap">
+  <!-- link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css"-->
+  <!--link rel="stylesheet" href="https://jqueryui.com/resources/demos/style.css"-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<script>
+var donut_data ;
+var donut_value ;
+var doc_info_url ;
+var doc_info_source ;
+var doc_info_date ;
+var document
+
+$(document).ready(function(){
+var prefixArray = ['holocaust', 'lion_movies', 'northern_ireland_same_sex_marriage', 'renault_south_korea', 'rio_carnival_coronavirus_risk', 'johnson_johnson_coronavirus_vaccine', 'russia_belarus', 'sustainable_plastic', 'us_warns_venezuela', 'shortage_virus_protective_equipment', 'slovenia_coaliation_talks', 'burkina', 'us_senators_visit_ukraine', 'meteor_strikes', 'dutch_pm_handshake', 'hamas', 'afg', 'thailand', 'nasa_wildfires', 'bumblebees_and_climate_change', 'why_we_laugh', 'russia_hospital_accidents', 'russia_virus_cases_record', 'lidar_industry', 'iraq', 'india_gas_leak', 'wild_animal_dna', 'travel_warning', 'era_deadline_vote_us_house', 'human_evolution', 'job_growth_january_2020', 'hobby_psy_benefits', 'us_private_payroll_job_loss_april_2020', 'why_does_sugar_taste_so_good', 'ancient_humans_death', 'bernie_sanders_and_religion', 'new_hampshire_primary', 'australia_lockdown_mothers_day', 'us_apparel_retail_stores_reopen', 'paleontology_giant_turtle', 'turkish_aid_for_libya', 'recap_peace_plan', 'iran_nuclear_bomb', 'us_trump_wants_black_border_wall', 'robot_surgery', 'dutch_restaurant_virus', 'wells_fargo_culture', 'palestine', 'china_help', 'trump_sotu_climate', 'mars_down_to_earth', 'detecting_fake_whiskies', 'afg_general_joins_taliban', 'astronomy_closest_black_hole_to_earth', 'us_unemployed_optimistic', 'china_first_new_virus_case_in_whuan', 'cdc_rejects_chinese_label', 'epigenetics', 'iowa_caucus', 'east_africa_locusts', 'hk_police_arrest_protesters', 'libya_9_years_of_civil_war', 'colombia_police_excessive_force', 'pope_francis_and_celibacy', 'china_pop_up_hospitals', 'uk_pm_reshapes_government', 'ai_finding_new_drugs', 'disney_plus', 'angola', 'doj_intervenes_russia_probe', 'pterosaur_footprint', 'us_rockefeller_heirs', 'rna_editing', 'russia_missiles', 'saic_acquires_unisys', 'indonesia_ramadan_school_online', 'uk_race_gap_in_virus_deaths', 'virus_death_rate_ethnic_groups', 'china_who', 'china_disneyland_reopens', 'military_latin_america', 'xi_jinping_visits_wuhan', 'co2_emissions_2019', 'bernie_sanders_economic_policies', 'israel_new_netnyahu_govt', 'mobile_world_congress_canceled', 'companies_doing_biz_with_israeli_settlements', 'doj_drops_flynn_case', 'russia_putin_term', 'algeria_crisis', 'us_irs_stimulus_mistakes', 'peru_peatlands', 'spotify_buys_ringer', 'oceans_speeding_up', 'new_banksy_artwork', 'sudan_war_criminals', 'uk_economy_historic_shrinkage', 'stage_stores_bankruptcy', 'tokyo_olympics_and_virus', 'how_bloomberg_could_win', 'trump_vows_aca_end', 'brexit_to_do_list', 'mideast_peace', 'iraq3', 'eu_pandemic_recession', 'bostwana_elephant_hunting', 'india_kashmir', 'adult_children_with_aging_parents_at_home', 'disney_profit_drop', 'eu_refugee_crisis', 'trump_peace_deal_with_taliban', 'venezuela_coup_attempt_planning', 'cpac_attendee_virus', 'trump_names_postmaster_general', 'us_secret_service_payment_to_trump', 'south_korea_virus_lgbtq_community', 'romney_pariah', 'big_cats_as_pets', 'lego_problem', 'saving_florida_panthers', 'ancient_people_food_preservation', 'gaza_farmers', 'genome_and_new_cures', 'us_virus_economic_relief', 'iraq2', 'mexico_day_without_women', 'fifth_force', 'spain_anti_virus_plan', 'nasa_budget_proposal', 'israel_travel_restrictions', 'house_bill_labor_laws', 'drone_turkey', 'robot_radiologists', 'markets_down_coronavirus', 'trump_sotu_black_voters'];
+var prefixArrayLength = prefixArray.length
+
+var filePrefix = prefixArray[Math.floor(Math.random() * prefixArray.length)];
+var filename_html = "http://demo.entityze.com/www/markup/".concat(filePrefix)
+var filename_comp = "http://demo.entityze.com/www/comp/".concat(filePrefix)
+var filename_meta = "http://demo.entityze.com/meta/".concat(filePrefix)
+
+$('#comparison').load(filename_comp.concat("_compare_sem_msft.html"));
+$('#source0').load(filename_html.concat("_semasia.html"));
+$('#source1').load(filename_html.concat("_msft.html"));
+
+// document.getElementById('doc_information').innerHTML = 'Source: '+doc_info_source+' ('+doc_info_date;
+
+$.getJSON(filename_meta.concat("_meta.json"), display_metadata);
+console.log("We called the function that sets the value for donut_data");
+console.log(donut_data);
+});
+
+function display_metadata(json_content)
+{
+ donut_data = json_content.stats_msft.current_score_percentage;
+ donut_value = json_content.stats_msft.current_score_plus_percentage;
+ display_donut();
+ doc_info_url = json_content.info.url;
+ doc_info_source = json_content.info.source;
+ doc_info_date = json_content.info.creation_date;
+};
+
+function display_donut(){
+    // Data
+    var value = donut_value
+    var text = Math.round(value * 100) + '%'
+
+    //var data = [0.0, 0.12142857142857143, 0.05, 0.0, 0.24285714285714285, 0.19285714285714287, 0.08571428571428572, 0.2642857142857143, 0]
+    var data = donut_data
+
+    // Settings
+	var width = 360
+    var height = 80
+    var anglesRange = 0.5 * Math.PI
+    var radis = Math.min(width, 2 * height) / 2
+    var thickness = 32
+    // Colors
+
+    // stat_aggregation_values = ("-","--","---","=","==","===","+","++","+++", "?")
+
+    // old var colors = ["#DD8B66", "#DD8B66", "#C73F00", "#949494", "#949494", "#545454", "#66C094", "#00964D", "#00964D" ]
+
+    var colors = ["#DD8B66", "#DD8B66", "#C73F00", "#949494", "#949494", "#949494", "#66C094", "#66C094", "#00964D" ]
+
+    var pies = d3.layout.pie()
+    	.value( d => d)
+    	.sort(null)
+    	.startAngle( anglesRange * -1)
+    	.endAngle( anglesRange)
+
+		var arc = d3.svg.arc()
+    	.outerRadius(radis)
+    	.innerRadius(radis - thickness)
+
+    var translation = (x, y) => `translate(${x}, ${y})`
+
+    // Feel free to change or delete any of the code you see in this editor!
+    var svg = d3.select("#comparison_donut").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+    	.attr("class", "half-donut")
+			.append("g")
+    	.attr("transform", translation(width / 2, height))
+
+    svg.selectAll("path")
+    	.data(pies(data))
+    	.enter()
+    	.append("path")
+    	.attr("fill", (d, i) => colors[i])
+    	.attr("d", arc)
+
+		svg.append("text")
+    	.text( d => text)
+    	.attr("dy", "-0.5rem")
+    	.attr("class", "label")
+    	.attr("fill", "#00964D")
+    	.attr("text-anchor", "middle")
+
+    	score_summary.append('Semasia delivers a '+(100*donut_value).toFixed(0).toString()+'% improvement over Microsoft for this document.')
+        doc_information.append('Source: ' + doc_info_source +' ('+doc_info_date.toString() + ')')
+
+};
+
+function input_filename(){
+var filePrefix = prompt("Choose a filename prefix");
+
+var filename_html = "http://demo.entityze.com/www/markup/".concat(filePrefix)
+var filename_comp = "http://demo.entityze.com/www/comp/".concat(filePrefix)
+var filename_meta = "http://demo.entityze.com/meta/".concat(filePrefix)
+
+$('#comparison').load(filename_comp.concat("_compare_sem_google.html"));
+$('#source0').load(filename_html.concat("_semasia.html"));
+$('#source1').load(filename_html.concat("_google.html"));
+
+$.getJSON(filename_meta.concat("_meta.json"), display_metadata);
+console.log("We called the function that sets the value for donut_data");
+console.log(donut_data);
+
+};
+
+
+</script>
+
+  <style>
+
+.half-donut .label {
+      font-size: 2rem;
+    }
+
+  .site-header {
+    background-color: rgba(255, 255, 255, .85);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+  }
+
+  .regular {
+  display: flex;
+  line-height:175%;
+  word-spacing: 3px;
+  font-family: "Roboto Condensed";
+}
+
+  .column {
+  flex: 50%;
+  padding: 16px;
+}
+
+mark {
+  background:whitesmoke;
+}
+
+mark.small {
+  font-size: 12px;
+}
+
+mark.text {
+  word-spacing: 0.2em;
+  background:whitesmoke;
+}
+
+mark.text.middle {
+  word-spacing: 0.2em;
+  background:whitesmoke;
+}
+
+mark.text.left {
+  word-spacing: 0.2em;
+  background:whitesmnoke;
+}
+
+mark.text.right {
+  word-spacing: 0.2em;
+  background:whitesmoke;
+}
+
+mark.entity {
+background:lightyellow;
+overflow-wrap: break-word;
+word-wrap: break-word;
+padding: 0px 3px 0px 3px;
+border-radius: 4px;
+text-decoration-thickness: 0.1em;
+}
+
+
+mark.entity.B {
+background:yellow;
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+color:#000000;
+}
+
+mark.entity.B1 {
+background:yellow;
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+color:#000000;
+}
+
+mark.entity.B2 {
+background:yellow;
+border-style: dotted;
+border-width: 2px;
+border-color: #C73F00;
+color:#000000;
+}
+
+mark.entity.B3 {
+word-spacing: 0.2em;
+background:whitesmoke;
+border-width: 2px;
+border-color: whitesmoke;
+text-decoration: line-through;
+color:#000000;
+}
+
+mark.entity.B11 {
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+color:#000000;
+}
+
+mark.entity.B22 {
+border-style: dotted;
+border-width: 2px;
+border-color: #C73F00;
+color:#000000;
+}
+
+mark.entity.B33 {
+background:whitesmoke;
+text-decoration: line-through;
+color:#000000;
+}
+
+
+mark.entity.C {
+border-style: dotted;
+border-width: 2px;
+border-color: #949494;
+color:#000000;
+}
+
+mark.entity.D {
+background:white;
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+color:#000000;
+}
+
+mark.entity.E {
+background:yellow;
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+color:#000000;
+}
+
+mark.entity.E1 {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+color:#000000;
+}
+
+mark.entity.E2 {
+background:yellow;
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+color:#000000;
+}
+
+mark.entity.E3 {
+background:yellow;
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+color:#00964D;
+}
+
+mark.entity.E4 {
+background:yellow;
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+color:#000000;
+}
+
+mark.entity.AB {
+border-style: solid;
+border-width: 2px;
+border-color: #CCEADB;
+background:#CCEADB;
+color:#000000;
+}
+
+mark.entity.AB3 {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+}
+
+mark.entity.AC {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.AD {
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+background:#C73F00;
+color:#ffffff;
+}
+
+mark.entity.AE1 {
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+background:#C73F00;
+color:#ffffff;
+}
+
+mark.entity.AE2 {
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+background:#C73F00;
+color:#ffffff;
+}
+
+mark.entity.AE3 {
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+background:#C73F00;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.AE4 {
+border-style: solid;
+border-width: 2px;
+border-color: #C73F00;
+background:#C73F00;
+color:#ffffff;
+text-decoration: underline;
+}
+
+
+mark.entity.BA {
+border-style: solid;
+border-width: 2px;
+border-color: #F3D8CC;
+background:#F3D8CC;
+color:#000000;
+}
+
+mark.entity.B1A {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B2A {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B3A {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B11A {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B22A {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B33A {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+
+mark.entity.B1B1 {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+}
+
+mark.entity.B2B2 {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+}
+
+mark.entity.BC {
+background:blue;
+color:white;
+}
+
+mark.entity.B1C {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B2C {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B3C {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B11C {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B22C {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B33C {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.B1D {
+background:blue;
+color:white;
+}
+
+mark.entity.B1E1 {
+background:blue;
+color:white;
+}
+
+mark.entity.B1E2 {
+background:blue;
+color:white;
+}
+
+mark.entity.B1E3 {
+background:blue;
+color:white;
+text-decoration: underline;
+}
+
+mark.entity.B1E4 {
+background:blue;
+color:white;
+text-decoration: underline;
+}
+
+mark.entity.B2D {
+background:blue;
+color:white;
+}
+
+mark.entity.B2E1 {
+background:blue;
+color:white;
+}
+
+mark.entity.B2E2 {
+background:blue;
+color:white;
+}
+
+mark.entity.B2E3 {
+background:blue;
+color:white;
+text-decoration: underline;
+}
+
+
+mark.entity.B2E4 {
+background:blue;
+color:white;
+text-decoration: underline;
+}
+
+mark.entity.CA {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+}
+
+mark.entity.CB {
+background:purple;
+color:yellow;
+}
+
+mark.entity.CC {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+}
+
+mark.entity.CD {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.CE1 {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.CE2 {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+}
+
+mark.entity.CE3 {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+text-decoration-style: underline;
+}
+
+mark.entity.CE4 {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.DA {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+background:#00964D;
+color:#ffffff;
+}
+
+mark.entity.DB1 {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+}
+
+mark.entity.DC {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+}
+
+mark.entity.DD {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+}
+
+mark.entity.DE1 {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+}
+
+mark.entity.DE2 {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+}
+
+mark.entity.DE3 {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.DE4 {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E1A {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+background:#00964D;
+color:#ffffff;
+}
+
+mark.entity.E2A {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+background:#00964D;
+color:#ffffff;
+}
+
+mark.entity.E3A {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+background:#00964D;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E4A {
+border-style: solid;
+border-width: 2px;
+border-color: #00964D;
+background:#00964D;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E1C {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+}
+
+mark.entity.E2C {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+}
+
+mark.entity.E2E3 {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E2E4 {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E3E2 {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E1E4 {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+text-decoration: underline;
+}
+
+
+mark.entity.E3E4 {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration: underline;
+}
+
+
+mark.entity.E4E3 {
+border-style: solid;
+border-width: 2px;
+border-color: #DD8B66;
+background:#DD8B66;
+color:#ffffff;
+text-decoration: underline;
+}
+
+
+mark.entity.E3C {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E4C {
+border-style: solid;
+border-width: 2px;
+border-color: #66C094;
+background:#66C094;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E1D {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+}
+
+mark.entity.E2D {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+}
+
+mark.entity.E3D {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E4D {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E1E1 {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+}
+
+mark.entity.E2E2 {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+}
+
+mark.entity.E3E3 {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+text-decoration: underline;
+}
+
+mark.entity.E4E4 {
+border-style: solid;
+border-width: 2px;
+border-color: #949494;
+background:#949494;
+color:#ffffff;
+text-decoration: underline;
+}
+
+
+  .bs-tooltip, .arrow:after {
+    background: #00964D;!important;
+    border: 2px solid white;!important;
+  }
+  .bs-tooltip {
+    padding: 10px 20px;
+    color: white;
+    border-radius: 10px;
+    font: 12px "Roboto Condensed", Sans-Serif;
+    #text-transform: uppercase;
+    box-shadow: 0 0 7px black;!important;
+  }
+  .arrow {
+    width: 70px;
+    height: 16px;
+    overflow: hidden;
+    position: absolute;
+    left: 50%;
+    margin-left: -35px;
+    bottom: -16px;
+  }
+  .arrow.top {
+    top: -16px;
+    bottom: auto;
+  }
+  .arrow.left {
+    left: 20%;
+  }
+  .arrow:after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: -20px;
+    width: 25px;
+    height: 25px;
+    box-shadow: 6px 5px 9px -9px black;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+  .arrow.top:after {
+    bottom: -20px;
+    top: auto;}
+
+</style>
+
+</head>
+<body>
+
+   <nav class="site-header sticky-top py-1">
+
+    <div class="container d-flex flex-column px-0 flex-md-row justify-content-between">
+    <div class="col-4 mh-100 py-2 d-none d-md-inline-block align-self-center">
+    <a href="#home"><img src= "Semasia_Logo_320X96.png" class="img-fluid" style="background: transparent;"></a>
+  </div>
+
+  <div class="col-1 mh-100 my-2 py-2 align-self-stretch regular">
+  </div>
+
+  <div class="col-3 mh-100 my-2 py-2 align-self-stretch regular" style="background:whitesmoke;">
+    <div id = "comparison_donut"></div>
+  </div>
+
+  <div class="col-4 mh-100 py-2 d-none d-md-inline-block align-self-center regular">
+    <P></P>
+   <button type="button" class="btn btn-primary btn-sm btn-block my-2" onclick="location.reload()" style="font-size:75%;">Compare another random document</button>
+      <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+        <div class="btn-group mr-2" role="group">
+           <button type="button" class="btn-sm btn-light" href="#info" style="font-size:75%;">Doc Info</button>
+        </div>
+        <div class="btn-group mr-2" role="group">
+            <button type="button" class="btn-sm btn-light" data-toggle="collapse" href="#legend" aria-expanded="false" aria-controls="legend" style="font-size:75%;">Legend</button>
+        </div>
+        <div>
+              <button type="button" class="btn-sm btn-light mr-2" data-toggle="collapse" href="#methodology" aria-expanded="false" aria-controls="legend" style="font-size:75%;">Methodology</button>
+        </div>
+        <div>
+            <button type="button" class="btn-sm btn-light mr-2" data-toggle="collapse" href="#doc2graph" aria-expanded="false" aria-controls="legend" style="font-size:75%;">Doc2Graph (beta)</button>
+        </div>
+      </div>
+  </div>
+  </div>
+
+  </nav>
+
+    <p></p>
+
+   <div class ="svg"></div>
+
+   <div class="container flex-md-row justify-content-between regular">
+    <div class="col-sm-12 py-2 d-none d-md-inline-block">
+      <hr><div style = "font-size:200%;font-weight:bold" id="score_summary"></div><hr><br>
+    </div>
+   </div>
+
+  <div class="container collapse regular" id="legend">
+        <div class="container w-100 px-0 regular">
+            <div class="col-sm-12">
+                <a href="#" class="btn btn-secondary btn active" role="button" aria-pressed="true">LEGEND</b></a>
+                <hr>
+                <div class="container w-100 p-0 regular">
+                    <div class="col-sm-4 px-1 py-2 d-none d-md-inline-block">
+                        <mark class="entity E3A small" title="Semasia">Semasia handles these named entities</mark><mark class="text-right small"> much better than Microsoft.</mark><br>
+                        <mark class="entity E2A small" title="Semasia">Semasia handles these words</mark><mark class="text-right small"> much better than Microsoft.</mark><br>
+                        <mark class="entity E3E4 small"title="Semasia">Semasia handles these named entities</mark><mark class="text-right small"> better than Microsoft.</mark><br>
+                        <mark class="entity E1C small"title="Semasia">Semasia handles these words</mark><mark class="text-right small"> better than Microsoft.</mark><br>
+                        <mark class="entity E3E3 small" title="Ex-aequo">Semasia and Microsoft handle these named entities</mark><mark class="text-right small"> similarly.</mark><br>
+                        <mark class="entity DD small title="Ex-aequo"">Semasia and Microsoft handle these words</mark><mark class="text-right small"> similarly.</mark><br>
+                        <mark class="entity E4E3 small" title="Microsoft">Microsoft handles these named entities</mark><mark class="text-right small"> better than Semasia.</mark><br>
+                        <mark class="entity AC small" title="Microsoft">Microsoft handles these words</mark><mark class="text-right small"> better than Semasia.</mark><br>
+                        <mark class="entity AE3 small" title="Microsoft">Microsoft handles these named entities</mark><mark class="text-right small"> much better than Semasia.</mark><br>
+                        <mark class="entity AD small" title="Microsoft">Microsoft handles these words</mark><mark class="text-right small"> much better than Semasia.</mark><br>
+                    </div>
+                    <div class="col-sm-4 px-1 py-2 d-none d-md-inline-block">
+                            <mark class="text-right small">Microsoft correctly defines </mark><mark class="entity E3 small">these named entities.</mark><br>
+                            <mark class="text-right small">N/A: Microsoft only defines named entities.<br>
+                            <mark class="text-right small">N/A: Microsoft only defines named entities.<br>
+                            <mark class="text-right small">Microsoft detects </mark><mark class="entity E4 small">these named entities.</mark><br>
+                            <mark class="text-right small">Microsoft detects </mark><mark class="entity D small">these dates and numbers.</mark><br>
+                            <mark class="text-right small">Microsoft detects </mark><mark class="entity C small">these words.</mark><br>
+                            <mark class="text-right small">Microsoft incorrectly defines </mark><mark class="entity B1 small">these words.</mark><br>
+                            <mark class="text-right small">N/A: Microsoft only defines named entities.<br>
+                            <mark class="text-right small">N/A: Microsoft only defines named entities.<br>
+                            <mark class="text-right small">N/A: Microsoft only defines named entities.<br>
+                            <mark class="text-right small">Microsoft incorrectly detects </mark><mark class="entity B3 small">these words.</mark><br>
+                    </div>
+                    <div class="col-sm-4 px-1 py-2 d-none d-md-inline-block">
+                            <mark class="text-left small">Semasia correctly defines </mark><mark class="entity E3 small">these named entities.</mark><br>
+                            <mark class="text-left small">Semasia correctly defines </mark><mark class="entity E2 small">these primary words.</mark><br>
+                            <mark class="text-left small">Semasia correctly defines </mark><mark class="entity E1 small">these secondary words.</mark><br>
+                            <mark class="text-left small">Semasia detects </mark><mark class="entity E4 small">these named entities.</mark><br>
+                            <mark class="text-left small">Semasia detects </mark><mark class="entity D small">these dates and numbers.</mark><br>
+                            <mark class="text-left small">Semasia detects </mark><mark class="entity C small">these words.</mark><br>
+                            <mark class="text-left small">Semasia incorrectly defines </mark><mark class="entity B1 small">these primary words.</mark><br>
+                            <mark class="text-left small">Semasia incorrectly defines </mark><mark class="entity B11 small">these secondary words.</mark><br>
+                            <mark class="text-left small">Semasia loosely defines </mark><mark class="entity B2 small">these primary words.</mark><br>
+                            <mark class="text-left small">Semasia loosely defines </mark><mark class="entity B22 small">these secondary words.</mark><br>
+                            <mark class="text-left small">Semasia incorrectly detects </mark><mark class="entity B3 small">these primary words.</mark><br>
+                            <mark class="text-left small">Semasia incorrectly detects </mark><mark class="entity B33 small">these secondary words.</mark><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>
+
+
+   <div class="container collapse regular" id="methodology">
+      <div class="container width-100 justify-content-between regular">
+        <div class="col-sm-8 py-2 px-0 d-none d-md-inline-block">
+          <a href="#" class="btn btn-secondary btn active" role="button" aria-pressed="true">METHODOLOGY</b></a><p>
+          <hr>
+            Random news articles are downloaded on a regular basis and submitted "as is" to Google's Azure Cognitive Services for entity detection and to Semasia's LINKER (Language INterpretation & Knowledge Extraction Repository). Independent human reviewers then rate the validity of output without knowing which system generated it.
+        </div>
+          <div class="col-sm-4 py-2 px-0 d-none d-md-inline-block">
+          </div>
+      </div>
+  </div>
+
+   <div class="container collapse regular" id="info">
+  <div class="card card-body">
+      <div class="container width-100 justify-content-between regular">
+        <div class="col-sm-12 py-2 px-0 d-none d-md-inline-block">
+          <a href="#" class="btn btn-secondary btn active" role="button" aria-pressed="true">DOCUMENT INFORMATION</b></a><p>
+          <hr>
+            <div id="doc_information"></div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+  <p></p>
+
+<div class="container flex-md-row justify-content-between regular">
+
+  <div class="col-sm-4 py-2 d-none d-md-inline-block">
+      <a href="#" class="btn btn-secondary btn active" role="button" aria-pressed="true">COMPARISON</b></a><hr>
+      <div class = "p-2" id="comparison"></div>
+  </div>
+
+  <div class="col-sm-4 py-2 d-none d-md-inline-block">
+    <a href="#" class="btn btn-secondary btn active" role="button" aria-pressed="true">MICROSOFT RESULTS</b></a><hr>
+      <div class = "p-2" id="source1"></div>
+  </div>
+
+  <div class="col-sm-4 py-2 d-none d-md-inline-block">
+    <a href="#" class="btn btn-secondary btn active " role="button" aria-pressed="true">SEMASIA RESULTS</b></a><hr>
+      <div class = "p-2" id="source0"></div>
+  </div>
+
+</div>
+
+</body>
+
+
+</html>
