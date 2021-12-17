@@ -86,7 +86,7 @@
             const fileprefix_qp = getParameterByName("fileprefix");
             const collection = getParameterByName("collection");
             if(collection){
-                entityze_markup_url = entityze_host + "/www/markup/" + collection + "/"
+                entityze_markup_url = entityze_host + "/markup/" + collection + "/"
             }
             const checkElement = async selector => {
                 while (document.querySelector(selector) === null) {
@@ -96,7 +96,7 @@
             };
 
             async function update_filelist() {
-                const response = await fetch('_markup_entityze.json');
+                const response = await fetch(entityze_host + 'json/_markup_entityze.json');
                 const list = await response.json()
                 return list;
             }
