@@ -1,3 +1,39 @@
+.ui-autocomplete {
+    width: 490px;
+    z-index: 10000000;
+    display: block;
+    list-style-type: none;
+    background: #ffa162;
+    box-shadow: 0 2px 16px #4b4b4b;
+    border-radius: 12px;
+    margin-top: 15px !important;
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.ui-menu-item-wrapper {
+    /* display: none; */
+    z-index: 100000000;
+    background: #fff1e8;
+    width: 490px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer !important;
+    padding: 7px;
+    padding-right: 50px;
+
+}
+
+.ui-menu-item-wrapper:hover {
+    background: #ffa162;
+}
+
+.ui-menu-item {
+    width: 490px;
+}
+
 
 button.btn.btn-primary.btn-sm.btn-block.my-2 {
     background-color: #FF6600 !important;

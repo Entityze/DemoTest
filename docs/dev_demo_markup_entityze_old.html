@@ -70,7 +70,7 @@
         var entityze_host = "https://demo.entityze.com"
         // var entityze_host = "http://127.0.0.1:5000/data"
 
-        var entityze_markup_url = entityze_host + "/www/markup/"
+        var entityze_markup_url = entityze_host + "/markup/"
         var entityze_comp_url = entityze_host + "/comp/"
         var entityze_meta_url = entityze_host + "/meta/"
 
@@ -86,7 +86,7 @@
             const fileprefix_qp = getParameterByName("fileprefix");
             const collection = getParameterByName("collection");
             if(collection){
-                entityze_markup_url = entityze_host + "/www/markup/" + collection + "/"
+                entityze_markup_url = entityze_host + "/markup/" + collection + "/"
             }
             const checkElement = async selector => {
                 while (document.querySelector(selector) === null) {
@@ -96,7 +96,7 @@
             };
 
             async function update_filelist() {
-                const response = await fetch('_markup_entityze.json');
+                const response = await fetch(entityze_host + '/json/markup_entityze.json');
                 const list = await response.json()
                 return list;
             }
