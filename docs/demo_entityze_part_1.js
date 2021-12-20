@@ -10,6 +10,10 @@
         var entityze_host = "https://demo.entityze.com"
         // var entityze_host = "http://127.0.0.1:5000/data"
 
+        var url = window.location.pathname;
+        var filename = url.substring(url.lastIndexOf('/')+1);
+        console.log(filename)
+
         var entityze_markup_url = entityze_host + "/markup/"
         var entityze_comp_url = entityze_host + "/comp/"
         var entityze_meta_url = entityze_host + "/meta/"
