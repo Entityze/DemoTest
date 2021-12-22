@@ -8,7 +8,7 @@ var document;
 var prefixArray;
 
 var entityze_host = "https://demo.entityze.com"
-var entityze_host = "http://127.0.0.1"
+//var entityze_host = "http://127.0.0.1"
 
 var url = window.location.pathname;
 var filename = url.substring(url.lastIndexOf('/') + 1);
